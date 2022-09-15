@@ -397,7 +397,7 @@ def _parse_connect_dsn_and_args(*, dsn, host, port, user,
                     '/tmp', '/private/tmp', 'localhost']
 
     if not isinstance(host, list):
-        host = [host]
+        host = host.split(",")
 
     if auth_hosts is None:
         auth_hosts = host
@@ -950,7 +950,7 @@ async def _connect(*, loop, timeout, connection_class, record_class, **kwargs):
             chosen_connection = random.choice(candidates)
 
     await asyncio.gather(
-        (c.close() for c in candidates if c is not chosen_connection),
+        *(c.close() for c in candidates if c is not chosen_connection),
         return_exceptions=True
     )
 
